@@ -72,5 +72,15 @@ RUN cmake -S . -B build \
 
 RUN cmake --build build -j 24
 
-WORKDIR /3fs/build
+
+# 安装 ClickHouse 官方仓库
+RUN curl -fsSL 'https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key' | gpg --dearmor -o /usr/share/keyrings/clickhouse-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/clickhouse-keyring.gpg] https://packages.clickhouse.com/deb stable main" > /etc/apt/sources.list.d/clickhouse.list \
+    && apt-get update
+
+# 安装 ClickHouse 服务端和客户端
+RUN apt-get install -y clickhouse-server clickhouse-client
+
+
+WORKDIR /4fs/build
 
